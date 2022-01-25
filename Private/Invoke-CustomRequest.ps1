@@ -2,7 +2,7 @@ function Invoke-CustomRequest {
 	[CmdletBinding()]
 	param (
 		[Parameter(Mandatory = $True, Position = 0)][System.Object]$restParams,
-		[Parameter(Mandatory = $false, Position = 1)][System.Object]$Connection
+		[Parameter(Mandatory = $True, Position = 1)][System.Object]$Connection
 	)
 	$Headers = @{
 		"X-Auth-Token" = $Connection.ApiKey
@@ -14,10 +14,11 @@ function Invoke-CustomRequest {
 	}
 	catch {
 		if ($_.ErrorDetails.Message) {
-			Write-Error "Response from $($Connection.Address): $(($_.ErrorDetails.Message|convertfrom-json).message)."
+			$_.ErrorDetails
+			#Write-Error "Response from $($Connection.Address): $(($_.ErrorDetails.Message).message)."
 		}
 		else {
-			$_.ErrorDetails
+			$_.ErrorDetails.Message
 		}
 	}
 	$result
