@@ -98,21 +98,89 @@ function Get-LNMSDevices {
 	(Invoke-CustomRequest -restparams $restParams -Connection $Connection).Devices
 }
 function Remove-LNMSDevice {
-
+	[CmdletBinding()]
+	param (
+		[Parameter(Mandatory = $True, Position = 0)][System.Object]$hostname,
+		[Parameter(Mandatory = $false, Position = 1)][System.Object]$Connection=$Script:LNMSConnection
+	)
+	$restParams= @{
+		Method = 'Delete'
+		URI = "$($Connection.ApiBaseURL)/devices/$($hostname)"
+	}
+	(Invoke-CustomRequest -restparams $restParams -Connection $Connection).status
 }
 
 function Start-LNMSDeviceDiscovery {
-
+	[CmdletBinding()]
+	param (
+		[Parameter(Mandatory = $True, Position = 0)][System.Object]$hostname,
+		[Parameter(Mandatory = $false, Position = 1)][System.Object]$Connection=$Script:LNMSConnection
+	)
+	$restParams= @{
+		Method = 'Get'
+		URI = "$($Connection.ApiBaseURL)/devices/$($hostname)/discover"
+	}
+	(Invoke-CustomRequest -restparams $restParams -Connection $Connection).Devices
 }
 function Add-LNMSDeviceParents {
+	[CmdletBinding()]
+	param (
+		[Parameter(Mandatory = $false)][Object]$Connection=$Script:LNMSConnection,
+		[Parameter(Mandatory = $true, Position = 0)][string]$hostname,
+		[Parameter(Mandatory = $true, Position = 1)][array]$parentIDs
+	)
+	$deviceObject=@{
+		parentids = $parentIDs
+	}
 
+	$restParams= @{
+		Method = 'Post'
+		URI = "$($Connection.ApiBaseURL)/devices/$($hostname)/parents"
+		body =  $deviceObject|ConvertTo-Json -Depth 50
+	}
+	Write-Verbose "$($deviceObject|ConvertTo-Json -Depth 50)"
+
+	$Result = Invoke-CustomRequest -restParams $restParams -Connection $Connection
+	if (($Result[0].Gettype()) -eq [System.Management.Automation.ErrorDetails]) {$Result[0].Message}
+	else {$Result.message}
 }
 function Remove-LNMSDeviceParents {
+	[CmdletBinding()]
+	param (
+		[Parameter(Mandatory = $false)][Object]$Connection=$Script:LNMSConnection,
+		[Parameter(Mandatory = $true, Position = 0)][string]$hostname,
+		[Parameter(Mandatory = $true, Position = 1)][array]$parentIDs=$null
+	)
+	$deviceObject=@{
+		parentids = $parentIDs
+	}
 
+	$restParams= @{
+		Method = 'Delete'
+		URI = "$($Connection.ApiBaseURL)/devices/$($hostname)/parents"
+		body =  $deviceObject|ConvertTo-Json -Depth 50
+	}
+	Write-Verbose "$($deviceObject|ConvertTo-Json -Depth 50)"
+
+	$Result = Invoke-CustomRequest -restParams $restParams -Connection $Connection
+	if (($Result[0].Gettype()) -eq [System.Management.Automation.ErrorDetails]) {$Result[0].Message}
+	else {$Result.message}
 }
 
 function Get-LNMSDeviceParents {
-	
+	[CmdletBinding()]
+	param (
+		[Parameter(Mandatory = $false)][Object]$Connection=$Script:LNMSConnection,
+		[Parameter(Mandatory = $true, Position = 0)][string]$hostname,
+		[Parameter(Mandatory = $false)][switch]$showHostnames
+	)
+	$device=Get-LNMSDevice -hostname $hostname -Connection $Connection
+	$restParams= @{
+		Method = 'Get'
+		URI = "$($Connection.ApiBaseURL)/devices/?type=device&query=$($device.device_id)"
+	}
+	if ($showHostnames) {(Invoke-CustomRequest -restparams $restParams -Connection $Connection).Devices.dependency_parent_hostname}
+	else {(Invoke-CustomRequest -restparams $restParams -Connection $Connection).Devices.dependency_parent_id}
 }
 
 Export-ModuleMember -Function "*-*"
