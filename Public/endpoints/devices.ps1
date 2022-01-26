@@ -107,7 +107,7 @@ function Remove-LNMSDevice {
 		Method = 'Delete'
 		URI = "$($Connection.ApiBaseURL)/devices/$($hostname)"
 	}
-	(Invoke-CustomRequest -restparams $restParams -Connection $Connection).status
+	(Invoke-CustomRequest -restparams $restParams -Connection $Connection).message
 }
 
 function Start-LNMSDeviceDiscovery {
@@ -120,19 +120,31 @@ function Start-LNMSDeviceDiscovery {
 		Method = 'Get'
 		URI = "$($Connection.ApiBaseURL)/devices/$($hostname)/discover"
 	}
-	(Invoke-CustomRequest -restparams $restParams -Connection $Connection).Devices
+	(Invoke-CustomRequest -restparams $restParams -Connection $Connection).result.message
 }
 function Add-LNMSDeviceParents {
 	[CmdletBinding()]
 	param (
 		[Parameter(Mandatory = $false)][Object]$Connection=$Script:LNMSConnection,
-		[Parameter(Mandatory = $true, Position = 0)][string]$hostname,
-		[Parameter(Mandatory = $true, Position = 1)][array]$parentIDs
-	)
-	$deviceObject=@{
-		parentids = $parentIDs
-	}
+		
+		[Parameter(Mandatory = $true, Position = 0,ParameterSetName='names')]
+		[string]$hostname,
 
+		[Parameter(Mandatory = $true, Position = 0,ParameterSetName='deviceid')]
+		[string]$hostid,
+
+		[Parameter(Mandatory = $true, Position = 0,ParameterSetName='deviceids')]
+		[array]$parentIDs,
+
+		[Parameter(Mandatory = $true, Position = 1,ParameterSetName='names')]
+		[array]$parentHostnames
+
+	)
+	[string]$parentList = $parentIDs -join ','
+	$deviceObject=@{
+		parent_ids = $parentList
+	}
+	
 	$restParams= @{
 		Method = 'Post'
 		URI = "$($Connection.ApiBaseURL)/devices/$($hostname)/parents"
