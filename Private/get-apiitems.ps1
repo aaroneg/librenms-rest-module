@@ -19,7 +19,7 @@ function Get-ApiItem {
     (Invoke-PaRequest $restParams).result.entry
 }
 
-function Get-ApaItems {
+function Get-ApiItems {
     [CmdletBinding()]
     Param(
         [parameter(Mandatory = $false)][object]$apiConnection = $Script:apiConnection,
