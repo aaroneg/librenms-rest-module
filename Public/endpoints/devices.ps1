@@ -1,4 +1,7 @@
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_parameter_sets?view=powershell-7.2#declaring-parameter-sets
+$LNMSDeviceAPIPath="devices"
+# Note: These functions are clunky because of the possible valid parameter sets and values the API will accept. 
+# No need for $PSBoundParameters.GetEnumerator() on some of these.
 function Add-LNMSDevice{
 	[CmdletBinding()]
 	param (
@@ -64,10 +67,9 @@ function Add-LNMSDevice{
 
 	$restParams= @{
 		Method = 'Post'
-		URI = "$($Connection.ApiBaseURL)/devices/"
-		body =  $deviceObject|ConvertTo-Json -Depth 50
+		URI = "$($Connection.ApiBaseURL)/$LNMSDeviceAPIPath/"
+		body =  createJson($deviceObject)
 	}
-	Write-Verbose "$($deviceObject|ConvertTo-Json -Depth 50)"
 
 	$Result = Invoke-CustomRequest -restParams $restParams -Connection $Connection
 	if (($Result[0].Gettype()) -eq [System.Management.Automation.ErrorDetails]) {$Result[0].Message}
@@ -77,7 +79,7 @@ function Add-LNMSDevice{
 function Get-LNMSDevice {
 	[CmdletBinding()]
 	param (
-		[Parameter(Mandatory = $True, Position = 0)][System.Object]$hostname,
+		[Parameter(Mandatory = $True, Position = 0)][Alias("ID")][System.Object]$hostname,
 		[Parameter(Mandatory = $false, Position = 1)][System.Object]$Connection=$Script:LNMSConnection
 	)
 	$restParams= @{
@@ -93,14 +95,14 @@ function Get-LNMSDevices {
 	)
 	$restParams= @{
 		Method = 'Get'
-		URI = "$($Connection.ApiBaseURL)/devices/$($hostname)"
+		URI = "$($Connection.ApiBaseURL)/devices/"
 	}
 	(Invoke-CustomRequest -restparams $restParams -Connection $Connection).Devices
 }
 function Remove-LNMSDevice {
 	[CmdletBinding()]
 	param (
-		[Parameter(Mandatory = $True, Position = 0)][System.Object]$hostname,
+		[Parameter(Mandatory = $True, Position = 0)][Alias("ID")][System.Object]$hostname,
 		[Parameter(Mandatory = $false, Position = 1)][System.Object]$Connection=$Script:LNMSConnection
 	)
 	$restParams= @{
@@ -113,7 +115,7 @@ function Remove-LNMSDevice {
 function Start-LNMSDeviceDiscovery {
 	[CmdletBinding()]
 	param (
-		[Parameter(Mandatory = $True, Position = 0)][System.Object]$hostname,
+		[Parameter(Mandatory = $True, Position = 0)][Alias("ID")][System.Object]$hostname,
 		[Parameter(Mandatory = $false, Position = 1)][System.Object]$Connection=$Script:LNMSConnection
 	)
 	$restParams= @{
