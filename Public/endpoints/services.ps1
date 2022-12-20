@@ -1,20 +1,19 @@
-# https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_parameter_sets?view=powershell-7.2#declaring-parameter-sets
 $LNMSServiceAPIPath="services"
 function Add-LNMSServiceToDevice{
 	[CmdletBinding()]
 	param (
 		[Parameter(Mandatory = $true, Position = 0)]
-		[int]$device_id,
+		[string]$hostname,
 		[Parameter(Mandatory = $true, Position = 1)]
-		[string]$service_type,
+		[string]$type,
 		[Parameter(Mandatory = $false)]
-		[int]$service_ip,
+		[string]$ip,
 		[Parameter(Mandatory = $false)]
-		[string]$service_desc,
+		[string]$desc,
 		[Parameter(Mandatory = $false)]
-		[string]$service_param,
+		[string]$param,
 		[Parameter(Mandatory = $false)]
-		[switch]$service_ignore,
+		[switch]$ignore,
 		[Parameter(Mandatory = $false)]
 		[Object]$Connection=$Script:LNMSConnection
 	)
@@ -23,12 +22,12 @@ function Add-LNMSServiceToDevice{
 
 	$restParams= @{
 		Method = 'Post'
-		URI = "$($Connection.ApiBaseURL)/$LNMSServiceAPIPath/"
+		URI = "$($Connection.ApiBaseURL)/$LNMSServiceAPIPath/$hostname"
 		body = $PostJson
 	}
 
 	$PostObject = Invoke-CustomRequest -restParams $restParams -Connection $Connection
-	if (($Result[0].Gettype()) -eq [System.Management.Automation.ErrorDetails]) {$Result[0].Message}
+	if (($PostObject[0].Gettype()) -eq [System.Management.Automation.ErrorDetails]) {$PostObject[0].Message}
 	$PostObject
 
 }
