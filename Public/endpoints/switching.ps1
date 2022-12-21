@@ -107,3 +107,5 @@ Function Get-LNMSFDBEntries {
 	$PostObject = Invoke-CustomRequest -restParams $restParams -Connection $Connection
 	$PostObject.ports_fdb
 }
+
+Export-ModuleMember -Function "*-*"

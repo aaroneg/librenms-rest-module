@@ -75,3 +75,5 @@ function Remove-LNMSServiceFromHostname {
 
 # Not implemented
 # function Update-LNMSService ($Service) {}
+
+Export-ModuleMember -Function "*-*"

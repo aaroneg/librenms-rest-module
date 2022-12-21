@@ -14,3 +14,5 @@ Function Get-LNMSSystem {
 	$PostObject = Invoke-CustomRequest -restParams $restParams -Connection $Connection
 	$PostObject.System
 }
+
+Export-ModuleMember -Function "*-*"
