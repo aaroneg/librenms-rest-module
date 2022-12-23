@@ -9,8 +9,7 @@ Function Get-LNMSVlans {
 		URI = "$($Connection.ApiBaseURL)/resources/vlans"
 		body = $PostJson
 	}
-	$PostObject = Invoke-CustomRequest -restParams $restParams -Connection $Connection
-	$PostObject.vlans
+	(Invoke-CustomRequest -restParams $restParams -Connection $Connection).vlans
 }
 
 Function Get-LNMSVlanForDevice {
@@ -25,8 +24,7 @@ Function Get-LNMSVlanForDevice {
 		URI = "$($Connection.ApiBaseURL)/devices/$hostname/vlans"
 		body = $PostJson
 	}
-	$PostObject = Invoke-CustomRequest -restParams $restParams -Connection $Connection
-	$PostObject.vlans
+	(Invoke-CustomRequest -restParams $restParams -Connection $Connection).vlans
 }
 
 Function Get-LNMSLinks {
@@ -40,8 +38,7 @@ Function Get-LNMSLinks {
 		URI = "$($Connection.ApiBaseURL)/resources/links"
 		body = $PostJson
 	}
-	$PostObject = Invoke-CustomRequest -restParams $restParams -Connection $Connection
-	$PostObject.links
+	(Invoke-CustomRequest -restParams $restParams -Connection $Connection).links
 }
 
 Function Get-LNMSLinksFromHost {
@@ -56,8 +53,7 @@ Function Get-LNMSLinksFromHost {
 		URI = "$($Connection.ApiBaseURL)/devices/$hostname/links"
 		body = $PostJson
 	}
-	$PostObject = Invoke-CustomRequest -restParams $restParams -Connection $Connection
-	$PostObject.links
+	(Invoke-CustomRequest -restParams $restParams -Connection $Connection).links
 }
 
 Function Get-LNMSLink {
@@ -72,8 +68,7 @@ Function Get-LNMSLink {
 		URI = "$($Connection.ApiBaseURL)/resources/links/$id"
 		body = $PostJson
 	}
-	$PostObject = Invoke-CustomRequest -restParams $restParams -Connection $Connection
-	$PostObject.link
+	(Invoke-CustomRequest -restParams $restParams -Connection $Connection).link
 }
 
 Function Find-LNMSFDBEntriesByMAC {
@@ -88,8 +83,7 @@ Function Find-LNMSFDBEntriesByMAC {
 		URI = "$($Connection.ApiBaseURL)/resources/fdb/$MAC"
 		body = $PostJson
 	}
-	$PostObject = Invoke-CustomRequest -restParams $restParams -Connection $Connection
-	$PostObject.ports_fdb
+	(Invoke-CustomRequest -restParams $restParams -Connection $Connection).ports_fdb
 }
 
 Function Get-LNMSFDBEntries {
@@ -104,8 +98,7 @@ Function Get-LNMSFDBEntries {
 		URI = "$($Connection.ApiBaseURL)/resources/fdb"
 		body = $PostJson
 	}
-	$PostObject = Invoke-CustomRequest -restParams $restParams -Connection $Connection
-	$PostObject.ports_fdb
+	(Invoke-CustomRequest -restParams $restParams -Connection $Connection).ports_fdb
 }
 
 Export-ModuleMember -Function "*-*"
