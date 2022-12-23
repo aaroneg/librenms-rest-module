@@ -32,6 +32,7 @@ Function Get-LNMSPortsInGroup {
 }
 
 Function New-LNMSPortGroup {
+	[CmdletBinding()]
 	param (
 		[Parameter(Mandatory = $true, Position = 0)][string]$name,
 		[Parameter(Mandatory = $false, Position = 1)][string]$desc,
@@ -50,6 +51,7 @@ Function New-LNMSPortGroup {
 }
 
 Function Add-LNMSPortsToGroup {
+	[CmdletBinding()]
 	param (
 		[Parameter(Mandatory = $true, Position = 0)][string]$GroupID,
 		[Parameter(Mandatory = $false, Position = 1)][array]$PortIDs,
@@ -70,6 +72,7 @@ Function Add-LNMSPortsToGroup {
 
 }
 Function Remove-LNMSPortsFromGroup {
+	[CmdletBinding()]
 	param (
 		[Parameter(Mandatory = $true, Position = 0)][string]$GroupID,
 		[Parameter(Mandatory = $false, Position = 1)][array]$PortIDs,
