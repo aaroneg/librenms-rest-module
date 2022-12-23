@@ -26,7 +26,6 @@ function Add-LNMSServiceToDevice{
 	}
 
 	$PostObject = Invoke-CustomRequest -restParams $restParams -Connection $Connection
-	if (($PostObject[0].Gettype()) -eq [System.Management.Automation.ErrorDetails]) {$PostObject[0].Message}
 	$PostObject
 
 }
