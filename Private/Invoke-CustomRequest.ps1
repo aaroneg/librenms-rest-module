@@ -11,15 +11,12 @@ function Invoke-CustomRequest {
 	Write-Verbose "[$($MyInvocation.MyCommand.Name)] Making API call."
 	try {
 		$result = Invoke-RestMethod @restParams -Headers $headers
+		$result
 	}
 	catch {
-		if ($_.ErrorDetails.Message) {
-			$_.ErrorDetails
-			#Write-Error "Response from $($Connection.Address): $(($_.ErrorDetails.Message).message)."
-		}
-		else {
-			$_.ErrorDetails.Message
-		}
+		$ErrObj=$_.ErrorDetails.Message|ConvertFrom-Json
+		if ($ErrObj.Status -eq 'error') { Throw $ErrObj.Message}
+		else {Write-Warning $ErrObj.Message}
 	}
-	$result
+
 }
